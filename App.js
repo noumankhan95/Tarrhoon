@@ -12,44 +12,77 @@ const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 import * as NewNavigate from "./extra/NavigationService";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
-// TaskManager.defineTask(
-//   BACKGROUND_NOTIFICATION_TASK,
-//   ({ data, error, executionInfo }) => {
-//     console.log("here");
-//     if (error) {
-//       console.log("Error in background task:", error);
-//       return;
-//     }
+import  {
+  InterstitialAd,
+  TestIds,
+  AdEventType,
+} from "react-native-google-mobile-ads";
+import { AppOpenAd } from "react-native-google-mobile-ads";
+const appOpenAd = AppOpenAd.createForAdRequest(TestIds.APP_OPEN, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ["fashion", "clothing"],
+});
+TaskManager.defineTask(
+  BACKGROUND_NOTIFICATION_TASK,
+  ({ data, error, executionInfo }) => {
+    console.log("here");
+    if (error) {
+      console.log("Error in background task:", error);
+      return;
+    }
 
-//     NewNavigate.navigate("ChatScreen", {
-//       nexists: true,
-//     });
-//   }
-// );
-// Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+    NewNavigate.navigate("ChatScreen", {
+      nexists: true,
+    });
+  }
+);
+Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ["fashion", "clothing"],
+});
 export default function App() {
   const Stack = createNativeStackNavigator();
-  // useEffect(() => {
-  //   registerBackgroundTask();
-  // }, []);
-  // const registerBackgroundTask = async () => {
-  //   // Check if the background task is already registered
-  //   const isRegistered = await TaskManager.isTaskRegisteredAsync(
-  //     BACKGROUND_NOTIFICATION_TASK
-  //   );
-  //   console.log("registered", isRegistered);
-  //   if (!isRegistered) {
-  //     await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
-  //   }
-  // };
+  useEffect(() => {
+    registerBackgroundTask();
+    // mobileads()
+    //   .initialize()
+    //   .then((adapterStatuses) => {
+    //     // Initialization complete!
+    //   });
+  }, []);
+  useEffect(() => {
+    interstitial.load();
+    setTimeout(() => {
+      interstitial.show();
+    }, 20000);
+  }, []);
+  useEffect(() => {
+    appOpenAd.load();
+    setTimeout(() => {
+      navigation.replace("HomeScreen");
+
+      appOpenAd.show();
+    }, 10000);
+  }, []);
+  const registerBackgroundTask = async () => {
+    // Check if the background task is already registered
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(
+      BACKGROUND_NOTIFICATION_TASK
+    );
+    console.log("registered", isRegistered);
+    if (!isRegistered) {
+      await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+    }
+  };
   return (
     <StripeProvider publishableKey={process.env.STRIPE_KEY_PRODUCTION}>
       <UserContextProvider>
         <LangaugeContextProvider>
           <SafeAreaView style={styles.container}>
-            <StatusBar style="auto" />
+            <StatusBar style="dark" />
             {/* <Text style={{ marginTop: 60 }}>{expoPushToken}</Text> */}
-            <NavigationContainer>
+            <NavigationContainer ref={NewNavigate.setNavigator}>
               <Stack.Navigator>
                 <Stack.Screen
                   name="HomeScreen"

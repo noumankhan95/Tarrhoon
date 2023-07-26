@@ -23,6 +23,11 @@ const languages = [
     language: "Persian",
     image: require("../assets/persian.png"),
     value: "pr",
+  }, {
+    id: 4,
+    language: "French",
+    image: require("../assets/persian.png"),
+    value: "fr",
   },
 ];
 const SelectLanguage = (props) => {

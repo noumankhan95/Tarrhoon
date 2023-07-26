@@ -7,6 +7,7 @@ import {
   Alert,
   Button,
   TextInput,
+  Platform,
 } from "react-native";
 
 import { useConfirmPayment, CardField } from "@stripe/stripe-react-native";
@@ -114,9 +115,14 @@ const Payment = (props) => {
         onCardChange={(details) => {
           setcardDetails((p) => details);
         }}
-        style={{
-          flex: 0.2,
-        }}
+        style={[
+          {
+            flex: 0.2,
+          },
+          Platform.OS === "ios"
+            ? { backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 5 }
+            : {},
+        ]}
         placeholders={{ number: "4242 4242 4242 4242" }}
       />
       {/* </Modal> */}

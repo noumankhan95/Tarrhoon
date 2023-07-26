@@ -1,14 +1,45 @@
 export default {
   name: "Tarrhoon",
   slug: "social_assistance",
-  version: "1.1.0",
+  version: "1.1",
   orientation: "portrait",
   icon: "./assets/appicon.png",
   splash: {
     image: "./assets/splash.png",
     resizeMode: "cover",
   },
+  plugins: [
+    [
+      "expo-notifications",
+      {
+        icon: "./assets/splashlogo.png",
+        color: "#ffffff",
+      },
+    ],
+    [
+      "expo-media-library",
+      {
+        photosPermission: "Allow Social Assistance to access your photos.",
+        savePhotosPermission: "Allow Social Assistance to save photos.",
+        isAccessMediaLocationEnabled: true,
+      },
+    ],
+    [
+      "expo-image-picker",
+      {
+        photosPermission:
+          "The app accesses your photos to let you share them With the Admin",
+      },
+    ],
+    [
+      "expo-av",
+      {
+        microphonePermission: "Allow App to access your microphone.",
+      },
+    ],
+  ],
   android: {
+    versionCode: 2,
     icon: "./assets/simpleicon.png",
     googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
     adaptiveIcon: {
@@ -24,9 +55,24 @@ export default {
       "android.permission.MODIFY_AUDIO_SETTINGS",
     ],
   },
+  ios: {
+    icon: "./assets/simpleicon.png",
+    supportsTablet: true,
+    infoPlist: {
+      UIBackgroundModes: ["audio"],
+      NSPhotoLibraryUsageDescription:
+        "Allow Social Assistance to access your photos.",
+      NSPhotoLibraryAddUsageDescription:
+        "Allow Social Assistance to save photos.",
+    },
+    bundleIdentifier: "com.muhammad1700.social-assistance",
+  },
   extra: {
     eas: {
       projectId: "ac4a3de0-a120-498b-901c-0d3c4c4968e9",
     },
+  },
+  "react-native-google-mobile-ads": {
+    android_app_id: "ca-app-pub-6905963154493469~3923949168",
   },
 };

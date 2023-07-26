@@ -2,7 +2,7 @@
   "expo": {
     "name": "Tarrhoon",
     "slug": "social_assistance",
-    "version": "1.1.0",
+    "version": "1.1",
     "orientation": "portrait",
     "icon": "./assets/appicon.png",
     "userInterfaceStyle": "light",
@@ -54,6 +54,7 @@
       "bundleIdentifier": "com.muhammad1700.social-assistance"
     },
     "android": {
+      "versionCode": 2,
       "icon": "./assets/simpleicon.png",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
@@ -77,5 +78,8 @@
         "projectId": "ac4a3de0-a120-498b-901c-0d3c4c4968e9"
       }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-6905963154493469~3923949168"
   }
 }

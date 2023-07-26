@@ -2,10 +2,10 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
-  BackHandler,
   Alert,
   Text,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
@@ -30,6 +30,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { Userctx } from "../store/userContext";
 import Payment from "../components/HandlePayment";
 import * as NewNavigate from "../extra/NavigationService";
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -37,11 +38,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
-// const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 
-// Define the background task
-
-// Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 async function registerForPushNotificationsAsync() {
   let token;
   if (Device.isDevice) {
@@ -85,7 +82,6 @@ const Home = (props) => {
   const notificationListener = useRef();
   const responseListener = useRef();
   const { navigate } = useNavigation();
- 
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -93,17 +89,22 @@ const Home = (props) => {
         setExpoPushToken(token);
         return AsyncStorage.setItem("DeviceToken", token);
       })
-      .then((i) => console.log("Token Done", i))
       .catch((e) => console.log("token Error", e));
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
+        console.log(notification);
+
         setNotification(notification);
+        NewNavigate.navigate("ChatScreen", {
+          nexists: response.notification.request.identifier,
+        });
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        navigate("ChatScreen", {
+        console.log(response);
+        NewNavigate.navigate("ChatScreen", {
           nexists: response.notification.request.identifier,
         });
       });
@@ -188,11 +189,13 @@ const Home = (props) => {
         />
       </View>
     );
+
   return (
     <SafeAreaView style={styles.maincontainer}>
       {/* <NavigationContainer> */}
       <Stack.Navigator
         initialRouteName={showAboutScreen ? "About" : "MainCategories"}
+
         // initialRouteName={"Payment"}
       >
         <Stack.Screen
@@ -239,3 +242,14 @@ const styles = StyleSheet.create({
   maincontainer: { flex: 1 },
 });
 export default Home;
+
+async function schedulePushNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "You've got mail! 📬",
+      body: "Here is the notification body",
+      data: { data: "goes here" },
+    },
+    trigger: { seconds: 2 },
+  });
+}

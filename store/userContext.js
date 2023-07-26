@@ -26,7 +26,6 @@ const UserContextProvider = (props) => {
   });
   const changeUserInfoHandler = useCallback(
     (val) => {
-      console.log(val, "inval");
       setUserInfo((p) => val);
     },
     [UserInfo]
