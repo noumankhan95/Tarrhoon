@@ -10,6 +10,7 @@ import ChatIcon from "../components/ChatIcon";
 import Modal from "../components/Modal";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import HandlePayment from "../components/HandlePayment";
+import GameBanner from "../components/Ads/GameBannderAd";
 export default function ServiceScreen() {
   const { params } = useRoute();
   const { data } = params;
@@ -22,6 +23,7 @@ export default function ServiceScreen() {
       }}
       style={{ flex: 1 }}
     >
+      <GameBanner />
       <View>
         <Modal>
           <View style={{ margin: 4 }}>

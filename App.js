@@ -12,7 +12,7 @@ const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 import * as NewNavigate from "./extra/NavigationService";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
-import  {
+import {
   InterstitialAd,
   TestIds,
   AdEventType,
@@ -53,17 +53,19 @@ export default function App() {
   }, []);
   useEffect(() => {
     interstitial.load();
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       interstitial.show();
     }, 20000);
+    return () => clearTimeout(timer);
   }, []);
   useEffect(() => {
     appOpenAd.load();
-    setTimeout(() => {
-      navigation.replace("HomeScreen");
+    const timer = setTimeout(() => {
+      // NewNavigate.replace("HomeScreen");
 
       appOpenAd.show();
     }, 10000);
+    return () => clearTimeout(timer);
   }, []);
   const registerBackgroundTask = async () => {
     // Check if the background task is already registered
