@@ -82,7 +82,7 @@ const Home = (props) => {
   const notificationListener = useRef();
   const responseListener = useRef();
   const { navigate } = useNavigation();
-
+  const [isloading, setisloading] = useState(false)
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => {
@@ -97,7 +97,7 @@ const Home = (props) => {
 
         setNotification(notification);
         NewNavigate.navigate("ChatScreen", {
-          nexists: response.notification.request.identifier,
+          nexists: true,
         });
       });
 
@@ -146,6 +146,7 @@ const Home = (props) => {
   //   });
   // }, []);
   useLayoutEffect(() => {
+    setisloading(p => true)
     AsyncStorage.getItem("user")
       .then((value) => {
         if (value === null) {
@@ -156,10 +157,11 @@ const Home = (props) => {
       })
       .catch((error) => {
         console.log("Error retrieving local storage value:", error);
-      });
+      }).finally(f => setisloading(p => false));
   }, []);
   useEffect(() => {
     // Check local storage value to determine if the "About" screen has been shown before
+    setisloading(p => true)
 
     AsyncStorage.getItem("aboutScreenShown")
       .then((value) => {
@@ -176,7 +178,7 @@ const Home = (props) => {
       })
       .catch((error) => {
         console.log("Error retrieving local storage value:", error);
-      });
+      }).finally(f => setisloading(p => false));;
   }, []);
   if (!isConnected)
     return (
@@ -189,14 +191,18 @@ const Home = (props) => {
         />
       </View>
     );
-
+  if (isloading) return <ActivityIndicator
+    size={60}
+    color="green"
+    style={{ marginVertical: 30 }}
+  />
   return (
     <SafeAreaView style={styles.maincontainer}>
       {/* <NavigationContainer> */}
       <Stack.Navigator
         initialRouteName={showAboutScreen ? "About" : "MainCategories"}
 
-        // initialRouteName={"Payment"}
+      // initialRouteName={"Payment"}
       >
         <Stack.Screen
           name="About"

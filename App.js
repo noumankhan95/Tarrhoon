@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView, Alert } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Alert, Platform } from "react-native";
 import Home from "./Screens/Home";
 import LangaugeContextProvider from "./store/languageContext";
 import UserContextProvider from "./store/userContext";
@@ -11,17 +11,17 @@ import * as TaskManager from "expo-task-manager";
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 import * as NewNavigate from "./extra/NavigationService";
 import * as Notifications from "expo-notifications";
-import { useEffect } from "react";
-import {
+import { useEffect, useState } from "react";
+import mobileAds, {
   InterstitialAd,
   TestIds,
   AdEventType,
 } from "react-native-google-mobile-ads";
 import { AppOpenAd } from "react-native-google-mobile-ads";
-const appOpenAd = AppOpenAd.createForAdRequest(TestIds.APP_OPEN, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ["fashion", "clothing"],
-});
+// const appOpenAd = AppOpenAd.createForAdRequest(TestIds.APP_OPEN, {
+//   requestNonPersonalizedAdsOnly: true,
+//   keywords: ["fashion", "clothing"],
+// });
 TaskManager.defineTask(
   BACKGROUND_NOTIFICATION_TASK,
   ({ data, error, executionInfo }) => {
@@ -37,36 +37,46 @@ TaskManager.defineTask(
   }
 );
 Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
-const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL, {
+const interstitial = InterstitialAd.createForAdRequest(Platform.OS === "android" ? process.env.ANDROID_INTERSTITIAL : process.env.IOS_INTERSTITIAL, {
   requestNonPersonalizedAdsOnly: true,
   keywords: ["fashion", "clothing"],
 });
 export default function App() {
   const Stack = createNativeStackNavigator();
+  const [isInterstitialLoaded, setisInterstitialLoaded] = useState(false)
   useEffect(() => {
     registerBackgroundTask();
-    // mobileads()
-    //   .initialize()
-    //   .then((adapterStatuses) => {
-    //     // Initialization complete!
-    //   });
+    mobileAds()
+      .initialize()
+      .then((adapterStatuses) => {
+        // Initialization complete!
+      });
   }, []);
   useEffect(() => {
-    interstitial.load();
-    const timer = setTimeout(() => {
+    const unsub = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      setisInterstitialLoaded(p => true)
       interstitial.show();
-    }, 20000);
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    appOpenAd.load();
-    const timer = setTimeout(() => {
-      // NewNavigate.replace("HomeScreen");
 
-      appOpenAd.show();
-    }, 10000);
-    return () => clearTimeout(timer);
+    })
+    const unsub2 = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      setisInterstitialLoaded(p => false)
+
+    })
+    interstitial.load();
+    return () => { unsub(); unsub2(); }
   }, []);
+  // useEffect(() => {
+  //   const unsub = appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
+
+  //     appOpenAd.show();
+  //   })
+  //   appOpenAd.addAdEventListener(AdEventType.CLOSED, () => {
+  //     setisInterstitialLoaded(p => false)
+
+  //   })
+  //   appOpenAd.load();
+  //   return unsub
+  // }, []);
   const registerBackgroundTask = async () => {
     // Check if the background task is already registered
     const isRegistered = await TaskManager.isTaskRegisteredAsync(

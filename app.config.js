@@ -59,7 +59,6 @@ export default {
     icon: "./assets/simpleicon.png",
     supportsTablet: true,
     infoPlist: {
-      UIBackgroundModes: ["audio"],
       NSPhotoLibraryUsageDescription:
         "Allow Social Assistance to access your photos.",
       NSPhotoLibraryAddUsageDescription:
@@ -73,6 +72,7 @@ export default {
     },
   },
   "react-native-google-mobile-ads": {
-    android_app_id: "ca-app-pub-6905963154493469~3923949168",
+    "android_app_id": process.env.ANDROID_APPID,
+    "ios_app_id": process.env.IOS_APPID
   },
 };

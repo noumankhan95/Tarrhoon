@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 
-import { useConfirmPayment, CardField } from "@stripe/stripe-react-native";
+import { useConfirmPayment, CardField, CardForm } from "@stripe/stripe-react-native";
 import { useContext } from "react";
 import { Userctx } from "../store/userContext";
 import { useRoute } from "@react-navigation/native";
@@ -118,6 +118,7 @@ const Payment = (props) => {
         style={[
           {
             flex: 0.2,
+            width: "90%"
           },
           Platform.OS === "ios"
             ? { backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 5 }
@@ -125,6 +126,7 @@ const Payment = (props) => {
         ]}
         placeholders={{ number: "4242 4242 4242 4242" }}
       />
+
       {/* </Modal> */}
       {/* <TouchableOpacity onPress={buyWithCardHandler} style={styles.btnCon}>
         <Text>Pay Now</Text>

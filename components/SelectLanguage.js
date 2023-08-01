@@ -26,7 +26,7 @@ const languages = [
   }, {
     id: 4,
     language: "French",
-    image: require("../assets/persian.png"),
+    image: require("../assets/france.jpg"),
     value: "fr",
   },
 ];

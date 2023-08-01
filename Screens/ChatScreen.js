@@ -9,6 +9,7 @@ import {
   Animated,
   Image,
   Platform,
+  ImageBackground
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import ChatMessage from "../components/ChatMessage";
@@ -537,22 +538,26 @@ export default function ChatScreen(props) {
       behavior={Platform.OS === "ios" ? "height" : "padding"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 105 : -290}
     >
-      <View style={{ flex: 0.95 }}>
-        {isloadingChat ? (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}
-          >
-            <ActivityIndicator size={50} color="rgba(115,105,239,255)" />
-          </View>
-        ) : (
-          <FlatList
-            ref={flatlistRef}
-            data={chatMessages}
-            renderItem={({ item }) => <ChatMessage {...item} />}
-            keyExtractor={(item) => item.qa_id}
-          />
-        )}
-      </View>
+      <ImageBackground style={{ flex: 0.95 }} imageStyle={{ opacity: 0.3 }}
+        source={require('../assets/doodle2.png')}>
+        <View style={{ flex: 0.95 }}>
+          {isloadingChat ? (
+            <View
+              style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}
+            >
+              <ActivityIndicator size={50} color="rgba(115,105,239,255)" />
+            </View>
+          ) : (
+            <FlatList
+              ref={flatlistRef}
+              data={chatMessages}
+              renderItem={({ item }) => <ChatMessage {...item} />}
+              keyExtractor={(item) => item.qa_id}
+            />
+          )}
+        </View>
+      </ImageBackground>
+
       {document && (
         <View
           style={[
